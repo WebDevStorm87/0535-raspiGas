@@ -37,7 +37,12 @@ public class RfidReader : BackgroundService
     {
       int bToRead = _serialPort.BytesToRead;
       _logger.LogInformation(bToRead.ToString());
-      byte[] bufferRead = new byte[bToRead];
+      byte[] bufferRead = new Byte[100];
+      if (bToRead != 0)
+      {
+	      bufferRead = new byte[bToRead];
+      }
+
       byte[] bufferRfidCode = new byte[10];
       byte[] bufferRfidCs = new byte[2];
       string rxStringRfidCode = "";
