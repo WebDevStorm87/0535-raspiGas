@@ -146,14 +146,25 @@ public class RfidReader : BackgroundService
 			
 			if (_rfid != "" && _rfid != _lastRfid)
 			{
+				_logger.LogInformation(_rfid);
 				_lastRfid = _rfid;
 				_serialPort.DiscardInBuffer();
 				_serialPort.DiscardOutBuffer();
 				_serialPort.ReadExisting();
 			}
+
+			try
+			{
+				_rfid = ReadData();
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(e.ToString());
+				throw;
+			}
 			
-			_rfid = ReadData();
 			
 		}
+		_serialPort.Close();
 	}
 }
