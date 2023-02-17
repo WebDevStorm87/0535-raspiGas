@@ -15,7 +15,7 @@ public class RfidReader : BackgroundService
 		_logger = logger;
 		_serialPort = new SerialPort();
 			
-		_serialPort.PortName = "/dev/ttyAMA0";
+		_serialPort.PortName = "/dev/ttyS0";
 		_serialPort.BaudRate = 9600;
 		_serialPort.DataBits = 8;
 		_serialPort.StopBits = StopBits.One;
@@ -139,53 +139,53 @@ public class RfidReader : BackgroundService
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
 		
-		_serialPort = new SerialPort("/dev/ttyAMA0", 9600, Parity.None, 8, StopBits.One);
-
-		_serialPort.DataReceived += new SerialDataReceivedEventHandler(OnDataReceived);
-		_serialPort.Open();
-
-		while (!stoppingToken.IsCancellationRequested)
-		{
-			_logger.LogInformation("ExecuteAsync ReadRfid");
-			await Task.Delay(1000, stoppingToken);
-		}
-
-		_serialPort.Close();
-		
-		
+		// _serialPort = new SerialPort("/dev/ttyAMA0", 9600, Parity.None, 8, StopBits.One);
+		//
+		// _serialPort.DataReceived += new SerialDataReceivedEventHandler(OnDataReceived);
+		// _serialPort.Open();
+		//
 		// while (!stoppingToken.IsCancellationRequested)
 		// {
 		// 	_logger.LogInformation("ExecuteAsync ReadRfid");
-		// 	await Task.Delay(100, stoppingToken);
-		// 	if (!_serialPort.IsOpen)
-		// 	{
-		// 		OpenPort();
-		// 		await Task.Delay(1500, stoppingToken);
-		// 	}
-		// 	
-		// 	
-		// 	if (_rfid != "" && _rfid != _lastRfid)
-		// 	{
-		// 		_logger.LogInformation(_rfid);
-		// 		_lastRfid = _rfid;
-		// 		_serialPort.DiscardInBuffer();
-		// 		_serialPort.DiscardOutBuffer();
-		// 		_serialPort.ReadExisting();
-		// 	}
-		//
-		// 	try
-		// 	{
-		// 		_rfid = ReadData();
-		// 	}
-		// 	catch (Exception e)
-		// 	{
-		// 		_logger.LogError(e.ToString());
-		// 		throw;
-		// 	}
-		// 	
-		// 	
+		// 	await Task.Delay(1000, stoppingToken);
 		// }
+		//
 		// _serialPort.Close();
+		
+		
+		while (!stoppingToken.IsCancellationRequested)
+		{
+			_logger.LogInformation("ExecuteAsync ReadRfid");
+			await Task.Delay(100, stoppingToken);
+			if (!_serialPort.IsOpen)
+			{
+				OpenPort();
+				await Task.Delay(1500, stoppingToken);
+			}
+			
+			
+			if (_rfid != "" && _rfid != _lastRfid)
+			{
+				_logger.LogInformation(_rfid);
+				_lastRfid = _rfid;
+				_serialPort.DiscardInBuffer();
+				_serialPort.DiscardOutBuffer();
+				_serialPort.ReadExisting();
+			}
+		
+			try
+			{
+				_rfid = ReadData();
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(e.ToString());
+				throw;
+			}
+			
+			
+		}
+		_serialPort.Close();
 	}
 	
 	private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
